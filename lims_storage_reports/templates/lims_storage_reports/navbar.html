@@ -1,0 +1,42 @@
+{% load static %}
+   <nav class="nav">
+         <a class="nav_logo">
+                <img src="{% static "images/site_logo.png" %}" alt="site logo"
+                     style="width:30px;height:30px; margin-left: -0.5rem"/>
+                <span class="nav_name">BHHP Bio Repository</span>
+            </a>
+        <a href="{% url 'home_url' %}" class="nav_link active">
+            <i class="nav-icon cil-home"></i>
+            <span class="nav_name">Home</span>
+        </a>
+        <a href="{% url 'dashboard_url' %}" class="nav_link">
+            <i class="nav-icon cil-chart"></i>
+            <span class="nav_name">Dashboard</span>
+        </a>
+        <a href="{% url 'storage_view' %}" class="nav_link">
+            <i class="nav-icon cil-notes"></i>
+            <span class="nav_name">Specimen Log Reports</span>
+        </a>
+        <a href="{% url 'samples_url' %}" class="nav_link">
+            <i class="nav-icon cil-storage"></i>
+            <span class="nav_name">Storage Detail Reports</span>
+        </a>
+        <a href="{% url 'samples_url' %}" class="nav_link">
+            <i class="nav-icon cil-truck"></i>
+            <span class="nav_name">Shipping Logs</span>
+        </a>
+        <div class="mt-auto rounded">
+            <a href="{% url 'admin:auth_user_change' user.id %}" class="nav_link">
+                <i class="nav-icon cil-user"></i>
+                <span class="nav_name">Account Management</span>
+            </a>
+            <a href="{% url 'help_url' %}" class="nav_link">
+                <i class="nav-icon cil-info"></i>
+                <span class="nav_name">Help</span>
+            </a>
+            <a href="{% url 'logout' %}" class="nav_link">
+                <i class="cil-exit-to-app"></i>
+                <span class="nav_name">SignOut</span>
+            </a>
+        </div>
+    </nav>
