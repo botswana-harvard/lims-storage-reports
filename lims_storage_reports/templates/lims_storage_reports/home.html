@@ -104,7 +104,10 @@
         </div>
         <div class="col-md-6">
 			<div class="panel panel-info">
-				<div class="panel-heading custom-panel-heading"><b>Sample type by Visits</b></div>
+				<div class="panel-heading custom-panel-heading"><b>Sample type by Visits</b>
+                    <br>
+                <small>Each sample type column displays Total count and Participant count</small>
+                </div>
 					<div class="panel-body">
                         <div class="table-container">
 						<table class="table table-hover table-bordered">
@@ -123,10 +126,6 @@
                                     {% for sample_type in sample_types_visits %}
                                         <td><table class="table table-hover">
                                             <thead>
-                                                <tr>
-                                                    <th>Total count</th>
-                                                    <th>Participants</th>
-                                                </tr>
                                             </thead>
                                             <tbody>
                                                 <tr>
@@ -212,7 +211,7 @@
             border-radius: 3px 3px 0 0; /* Rounded corners for the top */
         }
         .table-container {
-            max-height: 200px;  /* Adjust the height as needed */
+            max-height: 300px;  /* Adjust the height as needed */
             overflow-y: auto;   /* Enable vertical scrolling */
         }
     

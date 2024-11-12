@@ -5,6 +5,9 @@
     <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#advancedFilterModal">
         <i class="bi bi-funnel"></i> Advanced Filter
     </button>
+    {% if filter_submitted %}
+            <span class="badge bg-success ms-2">Filter Applied</span>
+        {% endif %}
 </div>
 
 <!-- Modal Structure -->

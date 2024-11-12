@@ -13,6 +13,7 @@ class HomeView(TemplateView):
         context = super().get_context_data(**kwargs)
         
         advanced_filter_form = AdvancedSamplesFilterForm(self.request.GET)
+        filter_submitted = any(value for key, value in self.request.GET.items() if key != 'page')
 
         total_samples = DimSample.objects.count()
 
@@ -31,7 +32,8 @@ class HomeView(TemplateView):
             samples_by_facility =self.samples_by_facility(queryset),
             advanced_filter_form = advanced_filter_form,
             samples_visit_count = sample_counts_table,
-            sample_types_visits = sample_types
+            sample_types_visits = sample_types,
+            filter_submitted=filter_submitted
 
         )
         return context
