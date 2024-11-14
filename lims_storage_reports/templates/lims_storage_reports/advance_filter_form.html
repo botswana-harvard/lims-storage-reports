@@ -78,6 +78,7 @@
                             {% render_field advanced_filter_form.box_position__box__freezer__facility__id class="form-control" %}
                         </div>
                     </div>
+                    <input type="hidden" id="formSubmitted" name="formSubmitted" value="{% if filter_submitted %}true{% else %}false{% endif %}">
                     <div class="d-flex justify-content-between mt-4">
                         <input type="submit" class="btn btn-primary" value="Filter">
                         <button type="reset" class="btn btn-secondary ms-2" id="reset-button">
