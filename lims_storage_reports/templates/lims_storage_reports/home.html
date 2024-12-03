@@ -1,10 +1,10 @@
 {% extends 'storage_module/samples.html' %}
 {% load lims_storage_reports_extras%}
 {% block extra_script %}
+    {{ block.super }} 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.2/dist/chart.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 	<script src="https://code.highcharts.com/highcharts.src.js"></script>
-	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 	<script src="https://code.highcharts.com/highcharts.js"></script>
 	<script src="https://code.highcharts.com/modules/series-label.js"></script>
 	<script src="https://code.highcharts.com/modules/exporting.js"></script>
@@ -13,6 +13,65 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            var date = new Date().toISOString().split('T')[0];
+               var sample_by_visit = $("#sample_by_visits").DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'csv',
+                        title: function () {
+                            // Dynamic title using the current date
+                            return 'Samples_by_visits_' + date;
+                        }
+        
+                    },
+                    {
+                        extend: 'excel',
+                        title: function () {
+                            return 'Samples_by_visits_' + date;
+                        }
+                    },
+                ]
+               });
+               var sample_by_facility = $("#sample_by_facility").DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                        {
+                            extend: 'csv',
+                            title: function () {
+                                // Dynamic title using the current date
+                                return 'Samples_by_facility_' + date;
+                            }
+            
+                        },
+                        {
+                            extend: 'excel',
+                            title: function () {
+                                return 'Samples_by_facility__' + date;
+                            }
+                        },
+                ]
+               });
+               var sample_by_gender = $("#sample_by_gender").DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                        {
+                            extend: 'csv',
+                            title: function () {
+                                // Dynamic title using the current date
+                                return 'Samples_by_gender_' + date;
+                            }
+            
+                        },
+                        {
+                            extend: 'excel',
+                            title: function () {
+                                return 'Samples_by_gender__' + date;
+                            }
+                        },
+                ]
+               });
+
                 const resetButton = document.getElementById("reset-button");
                 const filterForm = document.getElementById("advancedFilterFormId");
                 const formSubmittedInput = document.getElementById("formSubmitted");
@@ -41,8 +100,8 @@
                         });
                     }
                 });
+    });
                 
-        });
     </script>
 {% endblock extra_script%}
 
@@ -107,14 +166,14 @@
         </script>
         </div>
         <div class="col-md-6">
-			<div class="panel panel-info">
+            <div class="panel panel-info">
 				<div class="panel-heading custom-panel-heading"><b>Sample type by Visits</b>
                     <br>
-                <small>Each sample type column displays Total count and Participant count</small>
+                        <small>Each sample type column displays Total count and Participant count</small>
                 </div>
+                <div class="table-container">
 					<div class="panel-body">
-                        <div class="table-container">
-						<table class="table table-hover table-bordered">
+                        <table class="table table-bordered" id="sample_by_visits">
                             <thead>
                                 <tr>
                                     <th>Visit Code</th>
@@ -143,12 +202,13 @@
                                 </tr>
                                 {% endfor %}
                             </tbody>
-                    </table>
-                </div>
+                        </table>
                     </div>
-            </div>
-        </div>
-	</div>
+                </div>
+                </div>
+              </div>
+          </div>
+    </div>   
 
 	<br>
 	<br>
@@ -157,7 +217,7 @@
 			<div class="panel panel-info">
 				<div class="panel-heading custom-panel-heading"><b>Sample type by gender</b></div>
 					<div class="panel-body">
-						<table class="table table-hover table-bordered">
+						<table class="table table-hover table-bordered" id="sample_by_gender">
 							<thead>
 								<tr>
 									<th>Sample Type</th>
@@ -184,7 +244,7 @@
             <div class="panel panel-info">
                 <div class="panel-heading custom-panel-heading"><b>Sample Counts by Facility</b></div>
                 <div class="panel-body">
-                    <table class="table table-hover table-bordered">
+                    <table class="table table-hover table-bordered" id="sample_by_facility">
                         <thead>
                             <tr>
                                 <th>Facility Name</th>
