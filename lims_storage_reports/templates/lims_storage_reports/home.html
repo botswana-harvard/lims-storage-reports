@@ -1,0 +1,295 @@
+{% extends 'storage_module/samples.html' %}
+{% load lims_storage_reports_extras%}
+{% block extra_script %}
+    {{ block.super }} 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.2/dist/chart.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script src="https://code.highcharts.com/highcharts.src.js"></script>
+	<script src="https://code.highcharts.com/highcharts.js"></script>
+	<script src="https://code.highcharts.com/modules/series-label.js"></script>
+	<script src="https://code.highcharts.com/modules/exporting.js"></script>
+	<script src="https://code.highcharts.com/modules/export-data.js"></script>
+	<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var date = new Date().toISOString().split('T')[0];
+               var sample_by_visit = $("#sample_by_visits").DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'csv',
+                        title: function () {
+                            // Dynamic title using the current date
+                            return 'Samples_by_visits_' + date;
+                        }
+        
+                    },
+                    {
+                        extend: 'excel',
+                        title: function () {
+                            return 'Samples_by_visits_' + date;
+                        }
+                    },
+                ]
+               });
+               var sample_by_facility = $("#sample_by_facility").DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                        {
+                            extend: 'csv',
+                            title: function () {
+                                // Dynamic title using the current date
+                                return 'Samples_by_facility_' + date;
+                            }
+            
+                        },
+                        {
+                            extend: 'excel',
+                            title: function () {
+                                return 'Samples_by_facility__' + date;
+                            }
+                        },
+                ]
+               });
+               var sample_by_gender = $("#sample_by_gender").DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                        {
+                            extend: 'csv',
+                            title: function () {
+                                // Dynamic title using the current date
+                                return 'Samples_by_gender_' + date;
+                            }
+            
+                        },
+                        {
+                            extend: 'excel',
+                            title: function () {
+                                return 'Samples_by_gender__' + date;
+                            }
+                        },
+                ]
+               });
+
+                const resetButton = document.getElementById("reset-button");
+                const filterForm = document.getElementById("advancedFilterFormId");
+                const formSubmittedInput = document.getElementById("formSubmitted");
+
+                filterForm.addEventListener("submit", function () {
+                    formSubmittedInput.value = "true"; // Set form submission status
+                });
+                
+                resetButton.addEventListener("click", function () {
+                    event.preventDefault();
+                    if (formSubmittedInput.value === "true") {
+                        // Form was submitted, so clear fields and reload the page
+                        console.log("Form was submitted. Reloading page to clear filters.");
+                        const url = window.location.origin + window.location.pathname;
+                        window.location.href = url; // Reload without query parameters
+                    } else {
+                        // Form was not submitted, so only clear the fields without reloading
+                        const fields = filterForm.querySelectorAll("input, select");
+                        fields.forEach(field => {
+                            if (field.type !== "submit") {
+                                field.value = ''; // Reset to empty for input fields
+                            }
+                            if (field.type === "checkbox" || field.type === "radio") {
+                                field.checked = false; // Uncheck checkboxes and radio buttons
+                            }
+                        });
+                    }
+                });
+    });
+                
+    </script>
+{% endblock extra_script%}
+
+{% block content %}
+    <div class="alert alert-info text-center">
+        <h3>Storage Module Statistical Reports</h3>
+        {% include 'lims_storage_reports/advance_filter_form.html' %}
+    </div>
+
+
+	<div class="row">
+        <div class="col-md-6">
+        <figure class="highcharts-figure">
+            <div id="sample_type"></div>
+            <p class="highcharts-description"><center>
+                Column chart shows the sample by sample types
+           </center> </p>
+        </figure>
+        <script>
+            
+                Highcharts.chart('sample_type', {
+                    chart: {
+                        type: 'column',
+                    },
+                    title: {
+                        text: 'Samples per sample type'
+                    },
+                    xAxis: {
+                        categories:[{% for data in sample_by_type%} '{{data.0}}',{% endfor %}],
+                        title: {
+                            text: null
+                        }
+                    },
+                    yAxis: {
+                        min: 0,
+                        max: 2800,
+                        title: {
+                            text: 'Samples Count',
+                        },
+                        labels: {
+                            overflow: 'justify'
+                        }
+                    },
+
+                    plotOptions: {
+                        bar: {
+                            dataLabels: {
+                                enabled: true
+                            }
+                        }
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    series: [{
+                        name: 'sample type ',
+                        data: [{% for data in sample_by_type %} {{data.1}},{% endfor %}],
+                    },]
+                });
+        
+            
+        </script>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-info">
+				<div class="panel-heading custom-panel-heading"><b>Sample type by Visits</b>
+                    <br>
+                        <small>Each sample type column displays Total count and Participant count</small>
+                </div>
+                <div class="table-container">
+					<div class="panel-body">
+                        <table class="table table-bordered" id="sample_by_visits">
+                            <thead>
+                                <tr>
+                                    <th>Visit Code</th>
+                                    {% for sample_type in sample_types_visits %}
+                                        <th>{{ sample_type }}</th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in samples_visit_count %}
+                                <tr>
+                                    <td>{{ row.visit_code }}</td>
+                                    {% for sample_type in sample_types_visits %}
+                                        <td><table class="table table-hover">
+                                            <thead>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>{{ row|get_item_total:sample_type}}</td>
+                                                    <td>{{ row|get_item_distinct:sample_type }}</td>
+                                                </tr>
+                                            </tbody>
+                                            </table>
+                                            </td>
+                                    {% endfor %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                </div>
+              </div>
+          </div>
+    </div>   
+
+	<br>
+	<br>
+	<div class="row">
+		<div class="col-md-6">
+			<div class="panel panel-info">
+				<div class="panel-heading custom-panel-heading"><b>Sample type by gender</b></div>
+					<div class="panel-body">
+						<table class="table table-hover table-bordered" id="sample_by_gender">
+							<thead>
+								<tr>
+									<th>Sample Type</th>
+									<th>Male Count</th>
+									<th>Female Count</th>
+									<th>Total Count</th>
+								</tr>
+							</thead>
+						  <tbody> 
+							{% for data in samples_types_by_gender %}
+							<tr>
+                                <td>{{ data.sample_type__sample_type|default:"Unknown" }}</td>
+                                <td>{{ data.count_male }}</td>
+                                <td>{{ data.count_female }}</td>
+                                <td>{{ data.total_count }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-info">
+                <div class="panel-heading custom-panel-heading"><b>Sample Counts by Facility</b></div>
+                <div class="panel-body">
+                    <table class="table table-hover table-bordered" id="sample_by_facility">
+                        <thead>
+                            <tr>
+                                <th>Facility Name</th>
+                                <th>Sample Count</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for data in samples_by_facility %}
+                            <tr>
+                                <td>{{ data.box_position__box__freezer__facility__facility_name|default:"Unknown" }}</td>
+                                <td>{{ data.sample_count }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+       
+    </div>
+	<style>
+        .custom-panel-heading {
+            background-color: #007bff; /* Bootstrap primary color or choose any color */
+            color: white; /* Text color */
+            font-weight: bold;
+            padding: 10px; /* Optional: adjust padding */
+            border-radius: 3px 3px 0 0; /* Rounded corners for the top */
+        }
+        .table-container {
+            max-height: 300px;  /* Adjust the height as needed */
+            overflow-y: auto;   /* Enable vertical scrolling */
+        }
+    
+        .table th, .table td {
+            text-align: center;  /* Center align text in the table cells */
+        }
+    </style>
+
+	
+{% endblock %}
+
+{% block custom_nav %}
+    {{ block.super }}   
+{% endblock custom_nav %}
+
+
+
